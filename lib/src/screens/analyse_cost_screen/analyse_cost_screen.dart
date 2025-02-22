@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:reliability_estimator/src/repos/analyse_cost_repo.dart';
 import 'package:reliability_estimator/src/screens/analyse_cost_screen/components/add_or_edit_row_dialog.dart';
 import 'package:reliability_estimator/src/screens/analyse_cost_screen/components/cell_widget.dart';
 import 'package:reliability_estimator/src/screens/analyse_cost_screen/model/row_model.dart';
@@ -15,15 +17,8 @@ class AnalyseCostScreen extends StatefulWidget {
 }
 
 class _AnalyseCostScreenState extends State<AnalyseCostScreen> {
-  TableModel _tableModel = TableModel.createFromRowModels(rows: []);
-
   @override
   Widget build(BuildContext context) {
-    int? lowestCostRowIndex = _tableModel.getRowIndexWithLowestAverageCost();
-    RowModel1? lowestCostRow = lowestCostRowIndex != null
-        ? _tableModel.rows[lowestCostRowIndex]
-        : null;
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
@@ -42,96 +37,106 @@ class _AnalyseCostScreenState extends State<AnalyseCostScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 25),
-            Table(
-              border: TableBorder.all(width: 1),
-              children: [
-                TableRow(
+            Consumer<AnalyseCostRepo>(
+              builder: (context, provider, child) {
+                final TableModel tableModel = provider.tableModel;
+
+                return Table(
+                  border: TableBorder.all(width: 1),
                   children: [
-                    CellWidget(
-                      text: 'Year of Service\nn',
-                      isBold: true,
+                    TableRow(
+                      children: [
+                        CellWidget(
+                          text: 'Year of Service\nn',
+                          isBold: true,
+                        ),
+                        CellWidget(
+                          text: 'Maintenance Cost\nf(n)',
+                          isBold: true,
+                        ),
+                        CellWidget(
+                          text: 'Cumulative Maintenance Cost\nΣf(n)',
+                          isBold: true,
+                        ),
+                        CellWidget(
+                          text: 'Depreciation Cost\n(Rs) = C - S',
+                          isBold: true,
+                        ),
+                        CellWidget(
+                          text: 'Total Cost (Rs)\nTC',
+                          isBold: true,
+                        ),
+                        CellWidget(
+                          text: 'Average Cost (Rs)\nA (n)',
+                          isBold: true,
+                        ),
+                        const SizedBox(),
+                      ],
                     ),
-                    CellWidget(
-                      text: 'Maintenance Cost\nf(n)',
-                      isBold: true,
+                    TableRow(
+                      decoration: BoxDecoration(),
+                      children: [
+                        CellWidget(
+                            text: '(1)', isBold: true, verticalPadding: 4),
+                        CellWidget(text: '', isBold: true, verticalPadding: 4),
+                        CellWidget(
+                            text: '(2)', isBold: true, verticalPadding: 4),
+                        CellWidget(
+                            text: '(3)', isBold: true, verticalPadding: 4),
+                        CellWidget(
+                            text: '(4) = (2) + (3)',
+                            isBold: true,
+                            verticalPadding: 4),
+                        CellWidget(
+                            text: '(5) = (4) / (1)',
+                            isBold: true,
+                            verticalPadding: 4),
+                        const SizedBox(),
+                      ],
                     ),
-                    CellWidget(
-                      text: 'Cumulative Maintenance Cost\nΣf(n)',
-                      isBold: true,
-                    ),
-                    CellWidget(
-                      text: 'Depreciation Cost\n(Rs) = C - S',
-                      isBold: true,
-                    ),
-                    CellWidget(
-                      text: 'Total Cost (Rs)\nTC',
-                      isBold: true,
-                    ),
-                    CellWidget(
-                      text: 'Average Cost (Rs)\nA (n)',
-                      isBold: true,
-                    ),
-                    const SizedBox(),
-                  ],
-                ),
-                TableRow(
-                  decoration: BoxDecoration(),
-                  children: [
-                    CellWidget(text: '(1)', isBold: true, verticalPadding: 4),
-                    CellWidget(text: '', isBold: true, verticalPadding: 4),
-                    CellWidget(text: '(2)', isBold: true, verticalPadding: 4),
-                    CellWidget(text: '(3)', isBold: true, verticalPadding: 4),
-                    CellWidget(
-                        text: '(4) = (2) + (3)',
-                        isBold: true,
-                        verticalPadding: 4),
-                    CellWidget(
-                        text: '(5) = (4) / (1)',
-                        isBold: true,
-                        verticalPadding: 4),
-                    const SizedBox(),
-                  ],
-                ),
-                for (int i = 0; i < _tableModel.rows.length; i++)
-                  TableRow(
-                    children: [
-                      CellWidget(
-                        text: _tableModel.rows[i].year.toString(),
-                      ),
-                      CellWidget(
-                        text: _tableModel.rows[i].maintenanceCost.toString(),
-                      ),
-                      CellWidget(
-                        text: _tableModel.rows[i].cumulativeMaintenanceCost
-                            .toString(),
-                      ),
-                      CellWidget(
-                        text: _tableModel.rows[i].depreciationCost.toString(),
-                      ),
-                      CellWidget(
-                        text: _tableModel.rows[i].totalCost.toString(),
-                      ),
-                      CellWidget(
-                        text: _tableModel.rows[i].averageCost.clean(2),
-                      ),
-                      MoreButton(
-                        options: [
-                          MenuOption(
-                            optionName: 'Edit Row',
-                            icon: Icons.edit,
-                            function: () => _onEditRowPressed(context, i),
+                    for (int i = 0; i < tableModel.rows.length; i++)
+                      TableRow(
+                        children: [
+                          CellWidget(
+                            text: tableModel.rows[i].year.toString(),
                           ),
-                          MenuOption(
-                            optionName: 'Delete Entry',
-                            icon: Icons.delete_outline,
-                            color: Colors.red,
-                            function: () => _onDeleteRowPressed(context, i),
+                          CellWidget(
+                            text: tableModel.rows[i].maintenanceCost.toString(),
                           ),
+                          CellWidget(
+                            text: tableModel.rows[i].cumulativeMaintenanceCost
+                                .toString(),
+                          ),
+                          CellWidget(
+                            text:
+                                tableModel.rows[i].depreciationCost.toString(),
+                          ),
+                          CellWidget(
+                            text: tableModel.rows[i].totalCost.toString(),
+                          ),
+                          CellWidget(
+                            text: tableModel.rows[i].averageCost.clean(2),
+                          ),
+                          MoreButton(
+                            options: [
+                              MenuOption(
+                                optionName: 'Edit Row',
+                                icon: Icons.edit,
+                                function: () => _onEditRowPressed(context, i),
+                              ),
+                              MenuOption(
+                                optionName: 'Delete Entry',
+                                icon: Icons.delete_outline,
+                                color: Colors.red,
+                                function: () => _onDeleteRowPressed(context, i),
+                              ),
+                            ],
+                          )
                         ],
-                      )
-                    ],
-                  ),
-              ],
+                      ),
+                  ],
+                );
+              },
             ),
             const SizedBox(height: 20),
             CustomButton1(
@@ -139,17 +144,24 @@ class _AnalyseCostScreenState extends State<AnalyseCostScreen> {
               text: 'Add Row',
             ),
             const SizedBox(height: 20),
-            if (lowestCostRow != null)
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'The year with the lowest average cost is year '
-                  '${lowestCostRow.year} with cost ${lowestCostRow.averageCost}',
-                  style: TextStyle(fontSize: 21, fontWeight: FontWeight.w400),
-                ),
-              )
-            else
-              const SizedBox(),
+            Consumer<AnalyseCostRepo>(
+              builder: (context, provider, child) {
+                if (provider.lowestCostRow != null) {
+                  return Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'The year with the lowest average cost is year '
+                      '${provider.lowestCostRow!.year} with '
+                      'cost ${provider.lowestCostRow!.averageCost.clean(2)}',
+                      style:
+                          TextStyle(fontSize: 21, fontWeight: FontWeight.w400),
+                    ),
+                  );
+                } else {
+                  return const SizedBox();
+                }
+              },
+            ),
           ],
         ),
       ),
@@ -157,6 +169,8 @@ class _AnalyseCostScreenState extends State<AnalyseCostScreen> {
   }
 
   Future<void> _onAddRowPressed(BuildContext context) async {
+    final TableModel oldModel = context.read<AnalyseCostRepo>().tableModel;
+
     late final Map<String, dynamic>? map;
 
     if (context.mounted) {
@@ -170,24 +184,28 @@ class _AnalyseCostScreenState extends State<AnalyseCostScreen> {
     if (map == null || map.isEmpty) return;
 
     final List<RowModel0> currentRows = [];
-    for (int i = 0; i < _tableModel.rows.length; i++) {
-      currentRows.add(RowModel0.fromModel1(_tableModel.rows[i]));
+    for (int i = 0; i < oldModel.rows.length; i++) {
+      currentRows.add(RowModel0.fromModel1(oldModel.rows[i]));
     }
-    setState(() {
-      _tableModel = TableModel.createFromRowModels(
-        rows: [
-          ...currentRows,
-          RowModel0(
-            year: int.parse(map!['year']),
-            maintenanceCost: double.parse(map['maintenance_cost']),
-            depreciationCost: double.parse(map['depreciation_cost']),
-          ),
-        ],
-      );
-    });
+    if (context.mounted) {
+      context.read<AnalyseCostRepo>().updateTableModel(
+            TableModel.createFromRowModels(
+              rows: [
+                ...currentRows,
+                RowModel0(
+                  year: int.parse(map['year']),
+                  maintenanceCost: double.parse(map['maintenance_cost']),
+                  depreciationCost: double.parse(map['depreciation_cost']),
+                ),
+              ],
+            ),
+          );
+    }
   }
 
   Future<void> _onEditRowPressed(BuildContext context, int rowIndex) async {
+    final TableModel oldModel = context.read<AnalyseCostRepo>().tableModel;
+
     late final Map<String, dynamic>? map;
 
     if (context.mounted) {
@@ -196,7 +214,7 @@ class _AnalyseCostScreenState extends State<AnalyseCostScreen> {
         builder: (context) {
           return AddOrEditRowDialog(
             isCreateNotEdit: false,
-            initialRowValue: RowModel0.fromModel1(_tableModel.rows[rowIndex]),
+            initialRowValue: RowModel0.fromModel1(oldModel.rows[rowIndex]),
           );
         },
       );
@@ -204,8 +222,8 @@ class _AnalyseCostScreenState extends State<AnalyseCostScreen> {
     if (map == null || map.isEmpty) return;
 
     final List<RowModel0> currentRows = [];
-    for (int i = 0; i < _tableModel.rows.length; i++) {
-      currentRows.add(RowModel0.fromModel1(_tableModel.rows[i]));
+    for (int i = 0; i < oldModel.rows.length; i++) {
+      currentRows.add(RowModel0.fromModel1(oldModel.rows[i]));
     }
     final editedRow = RowModel0(
       year: int.parse(map['year']),
@@ -213,21 +231,28 @@ class _AnalyseCostScreenState extends State<AnalyseCostScreen> {
       depreciationCost: double.parse(map['depreciation_cost']),
     );
     currentRows.replaceRange(rowIndex, rowIndex + 1, [editedRow]);
-    setState(() {
-      _tableModel = TableModel.createFromRowModels(
-        rows: [...currentRows],
-      );
-    });
+
+    if (context.mounted) {
+      context.read<AnalyseCostRepo>().updateTableModel(
+            TableModel.createFromRowModels(
+              rows: [...currentRows],
+            ),
+          );
+    }
   }
 
   Future<void> _onDeleteRowPressed(BuildContext context, int rowIndex) async {
+    final TableModel oldModel = context.read<AnalyseCostRepo>().tableModel;
+
     final List<RowModel0> currentRows = [];
-    for (int i = 0; i < _tableModel.rows.length; i++) {
-      currentRows.add(RowModel0.fromModel1(_tableModel.rows[i]));
+    for (int i = 0; i < oldModel.rows.length; i++) {
+      currentRows.add(RowModel0.fromModel1(oldModel.rows[i]));
     }
     currentRows.removeAt(rowIndex);
-    setState(() {
-      _tableModel = TableModel.createFromRowModels(rows: currentRows);
-    });
+    if (context.mounted) {
+      context.read<AnalyseCostRepo>().updateTableModel(
+            TableModel.createFromRowModels(rows: currentRows),
+          );
+    }
   }
 }

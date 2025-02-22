@@ -121,7 +121,7 @@ class _ReliabilitySectionState extends State<ReliabilitySection> {
                 child: Text(
                   reliability.isNaN
                       ? ''
-                      : '${reliability.clean()}  or  ${reliabilityInPercent.clean(5)}%',
+                      : '${reliability.clean(12)}  or  ${reliabilityInPercent.clean(2)}%',
                   style: const TextStyle(
                     fontSize: 25,
                     fontWeight: FontWeight.w600,

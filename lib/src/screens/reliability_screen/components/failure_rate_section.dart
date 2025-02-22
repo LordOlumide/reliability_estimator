@@ -19,7 +19,7 @@ class _FailureRateSectionState extends State<FailureRateSection> {
 
   String get failureRateInPP1000 => failureRate.isNaN || failureRate.isInfinite
       ? ''
-      : (failureRate * 100 * 1000).clean();
+      : (failureRate * 100 * 1000).clean(8);
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +108,7 @@ class _FailureRateSectionState extends State<FailureRateSection> {
                 child: Text(
                   failureRate.isNaN || failureRate.isInfinite
                       ? ''
-                      : '${failureRate.clean()}  or  $failureRateInPP1000',
+                      : '${failureRate.clean(12)}  or  $failureRateInPP1000',
                   style: const TextStyle(
                     fontSize: 25,
                     fontWeight: FontWeight.w600,

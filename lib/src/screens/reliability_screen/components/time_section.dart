@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:reliability_estimator/src/screens/reliability_screen/utils/time_utils.dart';
 import 'package:reliability_estimator/src/utils/double_extension.dart';
 import 'package:reliability_estimator/src/widgets/custom_text_field.dart';
 
@@ -15,11 +16,16 @@ class _TimeSectionState extends State<TimeSection> {
   double failureRate = 0;
   double reliabilityPercent = 0;
 
-  double get time => -math.log(reliabilityPercent / 100) / failureRate;
+  int hoursPerDay = 24;
+  int daysPerWeek = 7;
 
-  String get timeInDays => time.isNaN || time.isInfinite
-      ? ''
-      : '${time ~/ 24} days, ${(time % 24).clean(3)} hours';
+  double get timeInHours => -math.log(reliabilityPercent / 100) / failureRate;
+
+  String get formattedTime => TimeUtils.getTimeInYears(
+        noOfHours: timeInHours,
+        hoursPerDay: hoursPerDay,
+        daysPerWeek: daysPerWeek,
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -85,12 +91,67 @@ class _TimeSectionState extends State<TimeSection> {
         ),
         const SizedBox(height: 20),
         Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Hours per day',
+              style: TextStyle(fontSize: 20, color: Colors.black),
+            ),
+            const SizedBox(width: 8),
+            DropdownButton<int>(
+              value: hoursPerDay,
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              style: TextStyle(fontSize: 20, color: Colors.black),
+              items: [
+                for (int i = 1; i <= 24; i++)
+                  DropdownMenuItem(
+                    value: i,
+                    child: Text(
+                      i.toString(),
+                    ),
+                  ),
+              ],
+              onChanged: _setHoursPerDay,
+            ),
+            const SizedBox(width: 20),
+            Text(
+              'Days per week',
+              style: TextStyle(fontSize: 20, color: Colors.black),
+            ),
+            const SizedBox(width: 8),
+            DropdownButton<int>(
+              value: daysPerWeek,
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              style: TextStyle(fontSize: 20, color: Colors.black),
+              items: [
+                for (int i = 1; i <= 7; i++)
+                  DropdownMenuItem(
+                    value: i,
+                    child: Text(
+                      i.toString(),
+                    ),
+                  ),
+              ],
+              onChanged: _setDaysPerWeek,
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Align(
+          alignment: Alignment.center,
+          child: Text(
+            'At 4.34524 weeks per month and 12 months per year',
+            style: TextStyle(fontSize: 15, color: Colors.black),
+          ),
+        ),
+        const SizedBox(height: 20),
+        Row(
           children: [
             Expanded(
               child: Align(
                 alignment: Alignment.centerRight,
                 child: Text(
-                  'Estimated time (t)  =  -Ln(Reliability) / λ  =  ',
+                  'Time (t)  =  -Ln(Reliability) / λ  =  ',
                   style: TextStyle(
                     fontSize: 23,
                     fontWeight: FontWeight.w400,
@@ -104,9 +165,9 @@ class _TimeSectionState extends State<TimeSection> {
                 alignment: Alignment.centerLeft,
                 fit: BoxFit.scaleDown,
                 child: Text(
-                  time.isNaN || time.isInfinite
+                  timeInHours.isNaN || timeInHours.isInfinite
                       ? ''
-                      : '${time.clean(4)} hours  or  $timeInDays',
+                      : '${timeInHours.clean(2)} hours or $formattedTime',
                   style: const TextStyle(
                     fontSize: 25,
                     fontWeight: FontWeight.w600,
@@ -138,5 +199,21 @@ class _TimeSectionState extends State<TimeSection> {
               ? newValue
               : '0');
     });
+  }
+
+  void _setHoursPerDay(int? newValue) {
+    if (newValue != null) {
+      setState(() {
+        hoursPerDay = newValue;
+      });
+    }
+  }
+
+  void _setDaysPerWeek(int? newValue) {
+    if (newValue != null) {
+      setState(() {
+        daysPerWeek = newValue;
+      });
+    }
   }
 }

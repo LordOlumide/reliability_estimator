@@ -14,7 +14,6 @@ class _ReliabilityScreenState extends State<ReliabilityScreen> {
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.sizeOf(context).width;
-    final double spacing = screenWidth / 70;
 
     final titleStyle = const TextStyle(
       fontSize: 16,
@@ -33,38 +32,40 @@ class _ReliabilityScreenState extends State<ReliabilityScreen> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(50, 0, 50, 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            Text(
-              'Calculate Reliability from failure rate and time.',
-              style: titleStyle,
-            ),
-            const SizedBox(height: 2),
-            const ReliabilitySection(),
-            const SizedBox(height: 12),
-            Divider(color: Colors.black87, thickness: 1),
-            const SizedBox(height: 20),
-            Text(
-              'Calculate time from failure rate and reliability.',
-              style: titleStyle,
-            ),
-            const SizedBox(height: 2),
-            const TimeSection(),
-            const SizedBox(height: 12),
-            Divider(color: Colors.black87, thickness: 1),
-            const SizedBox(height: 20),
-            Text(
-              'Calculate failure rate from reliability and time.',
-              style: titleStyle,
-            ),
-            const SizedBox(height: 2),
-            const FailureRateSection(),
-            const SizedBox(height: 12),
-          ],
+      body: Scrollbar(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.fromLTRB(50, 0, 50, 50),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 20),
+              Text(
+                'Calculate failure rate from reliability and time.',
+                style: titleStyle,
+              ),
+              const SizedBox(height: 2),
+              const FailureRateSection(),
+              const SizedBox(height: 12),
+              Divider(color: Colors.black87, thickness: 1),
+              const SizedBox(height: 20),
+              Text(
+                'Calculate Reliability from failure rate and time.',
+                style: titleStyle,
+              ),
+              const SizedBox(height: 2),
+              const ReliabilitySection(),
+              const SizedBox(height: 12),
+              Divider(color: Colors.black87, thickness: 1),
+              const SizedBox(height: 20),
+              Text(
+                'Calculate time from failure rate and reliability.',
+                style: titleStyle,
+              ),
+              const SizedBox(height: 2),
+              const TimeSection(),
+              const SizedBox(height: 12),
+            ],
+          ),
         ),
       ),
     );
