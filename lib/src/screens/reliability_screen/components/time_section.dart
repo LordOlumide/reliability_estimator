@@ -25,6 +25,7 @@ class _TimeSectionState extends State<TimeSection> {
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.sizeOf(context).width;
     final double spacing = screenWidth / 70;
+    final double textBoxWidth = screenWidth / 5;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -32,39 +33,52 @@ class _TimeSectionState extends State<TimeSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 10),
-        SizedBox(width: 2 * spacing),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'Reliability (in %):',
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            SizedBox(width: spacing),
-            SizedBox(
-              width: screenWidth / 6,
-              child: CustomTextField(
-                onChanged: (String? newValue) =>
-                    _onReliabilityChanged(context, newValue),
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    'Reliability (in %):',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  SizedBox(width: spacing),
+                  SizedBox(
+                    width: textBoxWidth,
+                    child: CustomTextField(
+                      onChanged: (String? newValue) =>
+                          _onReliabilityChanged(context, newValue),
+                    ),
+                  ),
+                ],
               ),
             ),
             SizedBox(width: 2 * spacing),
-            Text(
-              'Failure Rate (failures per hour):',
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            SizedBox(width: spacing),
-            SizedBox(
-              width: screenWidth / 6,
-              child: CustomTextField(
-                onChanged: (String? newValue) =>
-                    _onFailureRateChanged(context, newValue),
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    'λ (failures/hour):',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  SizedBox(width: spacing),
+                  SizedBox(
+                    width: textBoxWidth,
+                    child: CustomTextField(
+                      onChanged: (String? newValue) =>
+                          _onFailureRateChanged(context, newValue),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

@@ -3,16 +3,19 @@ import 'package:flutter/material.dart';
 class CustomButton1 extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
+  final FocusNode? focusNode;
 
   const CustomButton1({
     super.key,
     required this.onPressed,
     required this.text,
+    this.focusNode,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      focusNode: focusNode,
       onTap: onPressed,
       child: Material(
         elevation: 4,
