@@ -1,16 +1,34 @@
 # reliability_estimator
 
-A new Flutter project.
+An academic tool for calculating system reliability, failure rates, and optimal replacement timing.
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+## Description
 
-A few resources to get you started if this is your first Flutter project:
+Reliability Estimator is an academic application to calculate the reliability, failure rate, and Mean Time To Failure (MTTF) of a system under different initial conditions. It is designed for academic and industrial use.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Purpose
+
+The main purpose of the application is:
+1. 🔍 Analyze key metrics: Reliability, Failure Rate, and MTTF.
+2. ⏳ Predict the expected lifetime of equipment.
+3. ⚙️ Optimize replacement schedules for cost-efficiency.
+*Powered by advanced algorithms and a reactive Flutter UI*
+
+## Screenshots
+
+#### Reliability Calculation Screen
+<img src="screenshots/reliability_calculator.png">
+
+#### Optimum Lifetime Screen
+<img src="screenshots/lifetime_estimation.png">
+
+
+## Contributing
+We welcome contributions from anyone. To contribute to the project, please follow these steps:
+- 🍴 Fork the repository.
+- 🌿 Create a branch for your feature/fix.
+- 💻 Commit changes with clear messages.
+- 🔄 Push to your fork.
+- ✨ Open a PR targeting the main branch.
